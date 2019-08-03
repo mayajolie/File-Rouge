@@ -8,20 +8,102 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Partenaires;
 use App\Entity\Depot;
+use App\Entity\User;
 use App\Entity\ComptBancaire;
-use App\Form\ComptBType;
+use App\Form\ComptBanType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 /**
  * @Route("/api")
  */
 class AdminSystemController extends FOSRestController
 {
+     /**
+     * @Route("/admin", name="super", methods={"POST","GET"})
+     */
+    public function admin(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
+    {
+        $values = json_decode($request->getContent());
+    
+        //======================= creer admin du partenaire====================//
+        $profit="";
+        if (isset($values->username, $values->password)) {
+            $user = new User();
+
+            $user->setUsername($values->username);
+            $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
+            $profit=$values->profit;
+             if ($profit==['ROLE_ADMIN_PART']) {
+                $user->setRoles($profit);
+            }
+            else{
+                $data =[
+                    'statu'=>400,
+                    'messag'=>'Ce profit n\'existe pas'
+                ];
+                return new JsonResponse($data ,400);
+            }
+            $user->setNom($values->nom);
+            $user->setPrenom($values->prenom);
+            $user->setAdresse($values->adre);
+            $user->setTelephone($values->tel);
+            $user->setEmail($values->email);
+            $user->setEtat($values->status);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+
+
+            //============================creer un compte bancaire==================//      
+
+            $compb = new ComptBancaire();
+
+            $compb->setNumCompt($values->numCompt);
+            $compb->setSolde($values->solde);
+
+            $entityManager->persist($compb); 
+            $entityManager->flush();
+
+        //=======================Ajout Partenaire==============================//  
+
+        $partenaire =new Partenaires();  
+
+        $partenaire->setRaisonSocial($values->raisonSocial);
+        $partenaire->setNinea($values->ninea);
+        $partenaire->setAdresse($values->adresse);
+        $partenaire->setTelephone($values->telephone);
+        $partenaire->setEtat($values->etat);
+        $partenaire->addUser($user);
+        $partenaire->addComptBancaire($compb);
+        
+        $entityManager->persist($partenaire);
+        $entityManager->flush();
+
+
+        $data = [
+            'STATUS' => 201,
+            'MESSAGE' => 'Le partenaire a été créé son compte bancaire et son administrateur',
+        ];
+
+        return new JsonResponse($data, 201);
+    }
+    $data = [
+        'status_1' => 500,
+        'message_1' => 'Vous devez renseigner les autres champs',
+    ];
+
+    return new JsonResponse($data, 500);
+
+    }
+
     /**
      * @Rest\Get("/partenaires", name="find_partenaires")
      * @IsGranted("ROLE_SUPER_ADMIN")
@@ -34,29 +116,7 @@ class AdminSystemController extends FOSRestController
         return $this->handleView($this->view($partenaire));
     }
 
-    /**
-     * @Route("/ajout", name="ajout", methods={"POST"})
-     */
-    public function AjoutP(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager)
-    {
-        $partenaire = $serializer->deserialize($request->getContent(), Partenaires::class, 'json');
-        $entityManager->persist($partenaire);
-        $entityManager->flush();
-
-        $data = [
-                'status' => 201,
-                'message' => 'L\'utilisateur a été créé',
-            ];
-
-        return new JsonResponse($data, 201);
-
-        $data = [
-            'statu' => 500,
-            'message' => 'Vous devez renseigner les clés username et password',
-        ];
-
-        return new JsonResponse($data, 500);
-    }
+  
 
     /**
      * @Route("/ajout/{id}", name="bloquer", methods={"PUT"})
@@ -89,10 +149,8 @@ class AdminSystemController extends FOSRestController
 
         return new JsonResponse($data);
     }
-
     /**
      * @Route("/comptB", name="compt", methods={"POST"})
-     * @IsGranted("ROLE_CAISSIER")
      */
     public function ajoutComptB(Request $request,EntityManagerInterface $entityManager)
     {
@@ -112,7 +170,6 @@ class AdminSystemController extends FOSRestController
     
 
     }
-
     /**
      * @Route("/depot", name="depot", methods={"POST"})
      * @IsGranted("ROLE_CAISSIER")
@@ -124,14 +181,19 @@ class AdminSystemController extends FOSRestController
             $depot = new Depot();
             $depot->setMontant($values->montant);
             $depot->setDateDepot(new \DateTime());
-            //recuperation de l'id du partenaire
-            $repo = $this->getDoctrine()->getRepository(CompteBancaire::class);
-            $partenaire = $repo->find($values->comptb);
-            $depot->setComptb($partenaire);
+            //recuperation de l'id du caissier
+            $repo = $this->getDoctrine()->getRepository(User::class);
+            $caissier = $repo->find($values->caissier); 
+            $depot->setCassier($caissier);
+             //recuperation du numero de compte
+             $repo = $this->getDoctrine()->getRepository(ComptBancaire::class);
+             $numcompt = $repo->findOneBy(['numCompt'=>$values->numeroCompt]);
+             $depot->setNumeroCompt($numcompt);
             //incrementant du solde du partenaire du montant du depot
-            $partenaire->setSolde($partenaire->getSolde() + $values->montant);
-            //enregistrement au niveau du partenaire
-            $entityManager->persist($partenaire);
+            $numcompt->setSolde($numcompt->getSolde() + $values->montant);
+            //enregistrement au niveau du compte bancaire
+            $entityManager->persist($numcompt);
+
 
             //enregistrement au niveau du depot
             $entityManager->persist($depot);

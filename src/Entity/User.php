@@ -70,19 +70,16 @@ class User implements UserInterface
      */
     private $partenaire;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ComptBancaire", mappedBy="caissier")
-     */
-    private $comptBancaires;
+   
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="cassier")
      */
     private $depots;
 
+
     public function __construct()
     {
-        $this->comptBancaires = new ArrayCollection();
         $this->depots = new ArrayCollection();
     }
 
@@ -243,36 +240,7 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|ComptBancaire[]
-     */
-    public function getComptBancaires(): Collection
-    {
-        return $this->comptBancaires;
-    }
-
-    public function addComptBancaire(ComptBancaire $comptBancaire): self
-    {
-        if (!$this->comptBancaires->contains($comptBancaire)) {
-            $this->comptBancaires[] = $comptBancaire;
-            $comptBancaire->setCaissier($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComptBancaire(ComptBancaire $comptBancaire): self
-    {
-        if ($this->comptBancaires->contains($comptBancaire)) {
-            $this->comptBancaires->removeElement($comptBancaire);
-            // set the owning side to null (unless already changed)
-            if ($comptBancaire->getCaissier() === $this) {
-                $comptBancaire->setCaissier(null);
-            }
-        }
-
-        return $this;
-    }
+   
 
     /**
      * @return Collection|Depot[]
@@ -304,4 +272,6 @@ class User implements UserInterface
 
         return $this;
     }
+
+  
 }

@@ -50,10 +50,7 @@ class Partenaires
      */
     private $users;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ComptBancaire", mappedBy="partenaire")
-     */
-    private $comptBancaires;
+   
 
     public function __construct()
     {

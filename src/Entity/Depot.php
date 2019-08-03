@@ -18,10 +18,7 @@ class Depot
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $numCompt;
+   
 
     /**
      * @ORM\Column(type="bigint")
@@ -38,22 +35,17 @@ class Depot
      */
     private $cassier;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\ComptBancaire", inversedBy="depots")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $numeroCompt;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNumCompt(): ?string
-    {
-        return $this->numCompt;
-    }
-
-    public function setNumCompt(string $numCompt): self
-    {
-        $this->numCompt = $numCompt;
-
-        return $this;
-    }
 
     public function getMontant(): ?int
     {
@@ -87,6 +79,18 @@ class Depot
     public function setCassier(?User $cassier): self
     {
         $this->cassier = $cassier;
+
+        return $this;
+    }
+
+    public function getNumeroCompt(): ?ComptBancaire
+    {
+        return $this->numeroCompt;
+    }
+
+    public function setNumeroCompt(?ComptBancaire $numeroCompt): self
+    {
+        $this->numeroCompt = $numeroCompt;
 
         return $this;
     }

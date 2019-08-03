@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,10 +35,16 @@ class ComptBancaire
      */
     private $partenaire;
 
+    
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comptBancaires")
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="numeroCompt")
      */
-    private $caissier;
+    private $depots;
+
+    public function __construct()
+    {
+        $this->depots = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -79,14 +87,35 @@ class ComptBancaire
         return $this;
     }
 
-    public function getCaissier(): ?User
+   
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
     {
-        return $this->caissier;
+        return $this->depots;
     }
 
-    public function setCaissier(?User $caissier): self
+    public function addDepot(Depot $depot): self
     {
-        $this->caissier = $caissier;
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setNumeroCompt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getNumeroCompt() === $this) {
+                $depot->setNumeroCompt(null);
+            }
+        }
 
         return $this;
     }
