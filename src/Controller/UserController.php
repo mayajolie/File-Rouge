@@ -49,6 +49,7 @@ class UserController extends AbstractController
                 $partenaire = $repo->find($values->partenaire);
                 $user->setPartenaire($partenaire);
                 $user->setEtat($values->etat);
+
             }
             else{
                 $data =[
@@ -57,6 +58,8 @@ class UserController extends AbstractController
                 ];
                 return new JsonResponse($data ,400);
             }
+
+
             $user->setNom($values->nom);
             $user->setPrenom($values->prenom);
             $user->setAdresse($values->adresse);
@@ -89,6 +92,7 @@ class UserController extends AbstractController
      */
     public function login(Request $request)
     {
+      
         $user = $this->getUser();
 
         return $this->json([

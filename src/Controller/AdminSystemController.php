@@ -65,8 +65,15 @@ class AdminSystemController extends FOSRestController
             //============================creer un compte bancaire==================//      
 
             $compb = new ComptBancaire();
-
-            $compb->setNumCompt($values->numCompt);
+            $code="";
+            $jour = date('d');
+            $mois = date('m');
+            $annee = date('Y');
+            $heure = date('H');
+            $minutes = date('i');
+            $seconde = date('s');
+            $code = ($annee . $mois . $jour . $heure . $minutes . $seconde);
+            $compb->setNumCompt($code);
             $compb->setSolde($values->solde);
 
             $entityManager->persist($compb); 
