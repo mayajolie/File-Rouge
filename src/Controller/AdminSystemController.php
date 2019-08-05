@@ -27,6 +27,7 @@ class AdminSystemController extends FOSRestController
 {
      /**
      * @Route("/admin", name="super", methods={"POST","GET"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function admin(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
@@ -40,8 +41,8 @@ class AdminSystemController extends FOSRestController
             $user->setUsername($values->username);
             $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
             $profit=$values->profit;
-             if ($profit==['ROLE_ADMIN_PART']) {
-                $user->setRoles($profit);
+             if ($profit=='admin') {
+                $user->setRoles(['ROLE_ADMIN_PART']);
             }
             else{
                 $data =[
@@ -65,6 +66,7 @@ class AdminSystemController extends FOSRestController
             //============================creer un compte bancaire==================//      
 
             $compb = new ComptBancaire();
+            //generer un numero de compte bancaire
             $code="";
             $jour = date('d');
             $mois = date('m');
@@ -74,7 +76,7 @@ class AdminSystemController extends FOSRestController
             $seconde = date('s');
             $code = ($annee . $mois . $jour . $heure . $minutes . $seconde);
             $compb->setNumCompt($code);
-            $compb->setSolde($values->solde);
+            $compb->setSolde("0");
 
             $entityManager->persist($compb); 
             $entityManager->flush();
@@ -150,8 +152,8 @@ class AdminSystemController extends FOSRestController
         }
         $entityManager->flush();
         $data = [
-            'status' => 200,
-            'message' => 'L \'etat du partenaire a bien été mis à jour',
+            'statu' => 200,
+            'messag' => 'L \'etat du partenaire a bien été mis à jour',
         ];
 
         return new JsonResponse($data);
@@ -161,16 +163,29 @@ class AdminSystemController extends FOSRestController
      */
     public function ajoutComptB(Request $request,EntityManagerInterface $entityManager)
     {
-        $compb = new CompteBancaire();
-        $form = $this->createform(ComptBType::class, $compb);
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data);
-        //enregistrement au niveau du depot
-        $entityManager->persist($compb);
-        $entityManager->flush();
+        $values = json_decode($request->getContent());
+        $compb = new ComptBancaire();
+            //generer un numero de compte bancaire
+            $code="";
+            $jour = date('d');
+            $mois = date('m');
+            $annee = date('Y');
+            $heure = date('H');
+            $minutes = date('i');
+            $seconde = date('s');
+            $code = ($annee . $mois . $jour . $heure . $minutes . $seconde);
+            $compb->setNumCompt($code);
+            $compb->setSolde("0");
+            $repo = $this->getDoctrine()->getRepository(Partenaires::class);
+            $partenaire = $repo->find($values->partenaire);
+            $compb->setPartenaire($partenaire);
+
+            
+            $entityManager->persist($compb); 
+            $entityManager->flush();
         $data = [
-            'status' => 201,
-            'message' => 'Le compte bancaire  a été bien créer ',
+            'STATUT' => 201,
+            'MESSAGE' => 'Le compte bancaire  a été bien créer ',
         ];
 
         return new JsonResponse($data, 201);
@@ -198,6 +213,16 @@ class AdminSystemController extends FOSRestController
              $depot->setNumeroCompt($numcompt);
             //incrementant du solde du partenaire du montant du depot
             $numcompt->setSolde($numcompt->getSolde() + $values->montant);
+
+            if($values->montant<="75000") {
+                $data = [
+                    'status' => 500,
+                    'message' =>"Le solde minimum autorisée est 75000",
+                ];
+        
+                return new JsonResponse($data, 500);
+            }
+            else{
             //enregistrement au niveau du compte bancaire
             $entityManager->persist($numcompt);
 
@@ -207,18 +232,14 @@ class AdminSystemController extends FOSRestController
             $entityManager->flush();
 
             $data = [
-                'status' => 201,
+                'status_1' => 201,
                 'message' => 'Le depot  a été enregistré',
             ];
 
             return new JsonResponse($data, 201);
         }
-        $data = [
-            'status' => 500,
-            'message' => 'Vous devez renseigner les champs montants et idPartenaire',
-        ];
-
-        return new JsonResponse($data, 500);
+        }
+       
 
         return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
     }

@@ -34,6 +34,7 @@ class UserController extends AbstractController
 
             if($profit=='caisier'){
             $user->setRoles(['ROLE_CAISSIER']);
+            $user->setEtat($values->etat);
             }
             else if ($profit=='admin') {
                 $user->setRoles(['ROLE_ADMIN_PART']);
