@@ -10,13 +10,10 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     [
         'Vich\\UploaderBundle\\Mapping\\Annotation\\UploadableField' => [
             'mapping' => [
-                'user_image',
+                'user',
             ],
             'fileNameProperty' => [
                 'imageName',
-            ],
-            'size' => [
-                'imageSize',
             ],
         ],
     ],
