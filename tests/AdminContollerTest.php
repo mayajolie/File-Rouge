@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class AdminContollerTest extends WebTestCase
 {
 
-      
+    /*
     //=====================ajout Partenaire============//
      public function testAjoutP()
     {
@@ -21,9 +21,9 @@ class AdminContollerTest extends WebTestCase
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(201, $client->getResponse()->getStatusCode());
-    }
+    }/*
     //=======================lister Partenaire==================//
-    /* public function testIndex()
+     public function testIndex()
     {
         $client = static::createClient([],
             ['PHP_AUTH_USER' => 'mayajolie',
@@ -41,7 +41,7 @@ class AdminContollerTest extends WebTestCase
             ['PHP_AUTH_USER' => 'mayajolie',
             'PHP_AUTH_PW' => 'mayajolie', ]
         );
-        $crawler = $client->request('POST', '/api/ajout',[],[],
+        $crawler = $client->request('POST', '/api/admin',[],[],
         ['CONTENT_TYPE' => 'application/json'],
         '{"raisonSocial":"ngomSA","ninea": "","adresse": "Mermoz","telephone": ,"etat": "debloquer"}');
         $rep = $client->getResponse();
@@ -57,10 +57,8 @@ class AdminContollerTest extends WebTestCase
         );
         $crawler = $client->request('POST', '/api/comptB',[],[],
         ['CONTENT_TYPE' => 'application/json'],
-        '{"numeroCompte":"122100042",
-            "solde": 10000,
-            "partenaire": "1",
-            "caissier": "1"
+        '{
+            "partenaire": "47"
         }');
         $rep = $client->getResponse();
         var_dump($rep);
@@ -82,26 +80,26 @@ class AdminContollerTest extends WebTestCase
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(400, $client->getResponse()->getStatusCode());
-    }
+    }*/
     //===================================faire un depot =======================//
      public function testAddDepotOK()
     {
         $client = static::createClient([],
-            ['PHP_AUTH_USER' => 'mayajolie',
-            'PHP_AUTH_PW' => 'mayajolie', ]
+            ['PHP_AUTH_USER' => 'bsokhna',
+            'PHP_AUTH_PW' => 'bsokhna', ]
         );
         $crawler = $client->request('POST', '/api/depot',[],[],
         ['CONTENT_TYPE' => 'application/json'],
-        '{"montant": "800000",
-          "caissier": "25",
-          "numeroCompt": "20190803194514"
+        '{"montant": "7500",
+          "caissier": "50",
+          "numeroCompt": "20190805114302"
         }');
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(201, $client->getResponse()->getStatusCode());
-    } 
+    } /*
     //======================depot fausse============================//
-     public function testAddDepot()
+      public function testAddDepot()
     {
         $client = static::createClient([],
             ['PHP_AUTH_USER' => 'mayajolie',
@@ -116,7 +114,7 @@ class AdminContollerTest extends WebTestCase
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(400, $client->getResponse()->getStatusCode());
-    }
+    } 
     //=====================Ajout caisier=========================//
     public function testCaisier()
     {
@@ -124,7 +122,7 @@ class AdminContollerTest extends WebTestCase
             ['PHP_AUTH_USER' => 'mayajolie',
             'PHP_AUTH_PW' => 'mayajolie', ]
         );
-        $crawler = $client->request('POST', '/api/admin',[],[],
+        $crawler = $client->request('POST', '/api/register',[],[],
         ['CONTENT_TYPE' => 'application/json'],
         '{ 
             "username":"juniorlaye",
@@ -132,17 +130,17 @@ class AdminContollerTest extends WebTestCase
             "profit":"caisier",
             "nom":"ngom",
             "prenom":"abdoulaye",
-            "tel": "776418887",
-            "adre":"kounoune",
+            "telephone": "776418887",
+            "adresse":"kounoune",
             "email":"j@gmail.com",
-            "status":"bloquer",
+            "etat":"bloquer"
         }');
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(201, $client->getResponse()->getStatusCode());
     } 
     //================ajout user==================//
-    public function testUser()
+     public function testUser()
     {
         $client = static::createClient();
         $crawler = $client->request('POST', '/api/admin',[],[],
@@ -161,5 +159,5 @@ class AdminContollerTest extends WebTestCase
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(201, $client->getResponse()->getStatusCode());
-    }  */
+    }   */
 } 

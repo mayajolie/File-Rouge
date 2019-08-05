@@ -214,7 +214,7 @@ class AdminSystemController extends FOSRestController
             //incrementant du solde du partenaire du montant du depot
             $numcompt->setSolde($numcompt->getSolde() + $values->montant);
 
-            if($values->montant<="75000") {
+            if($values->montant<"75000") {
                 $data = [
                     'status' => 500,
                     'message' =>"Le solde minimum autorisée est 75000",

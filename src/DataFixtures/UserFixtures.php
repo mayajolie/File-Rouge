@@ -36,5 +36,21 @@ public function __construct(UserPasswordEncoderInterface $encoder)
         
         $manager->persist($user);
         $manager->flush();
+
+        $caisier = new User();
+        $caisier->setUsername('bsokhna');
+        $password = $this->encoder->encodePassword($user, 'bsokhna');
+        $caisier->setPassword($password);
+        $caisier->setRoles(['ROLE_CAISSIER']);
+        $caisier->setNom('ngom');
+        $caisier->setPrenom('sokhna');
+        $caisier->setAdresse('parcelle');
+        $caisier->setTelephone(771479013);
+        $caisier->setEmail('bsona@gmail.com');
+        $caisier->setEtat('');
+        
+        
+        $manager->persist($caisier);
+        $manager->flush();
     }
 }
