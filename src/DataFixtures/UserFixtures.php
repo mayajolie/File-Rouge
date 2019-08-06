@@ -32,6 +32,8 @@ public function __construct(UserPasswordEncoderInterface $encoder)
         $user->setTelephone(772918604);
         $user->setEmail('maya@gmail.com');
         $user->setEtat('');
+        $user->setImageName('1.png');
+        $user->setUpdatedAt(new \DateTime());
         
         
         $manager->persist($user);
@@ -48,7 +50,8 @@ public function __construct(UserPasswordEncoderInterface $encoder)
         $caisier->setTelephone(771479013);
         $caisier->setEmail('bsona@gmail.com');
         $caisier->setEtat('');
-        
+        $caisier->setImageName('1.png');
+        $caisier->setUpdatedAt(new \DateTime());
         
         $manager->persist($caisier);
         $manager->flush();

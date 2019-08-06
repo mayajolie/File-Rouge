@@ -2,22 +2,24 @@
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
-use FOS\RestBundle\Controller\FOSRestController;
+use App\Entity\User;
+use App\Entity\Depot;
+use App\Form\UserType;
+use App\Form\ComptBanType;
+use App\Entity\Partenaires;
+use App\Form\PartenaireType;
+use App\Entity\ComptBancaire;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Partenaires;
-use App\Entity\Depot;
-use App\Entity\User;
-use App\Entity\ComptBancaire;
-use App\Form\ComptBanType;
+use Symfony\Component\Routing\Annotation\Route;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
 
 
 /**
@@ -27,41 +29,47 @@ class AdminSystemController extends FOSRestController
 {
      /**
      * @Route("/admin", name="super", methods={"POST","GET"})
-     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function admin(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
         $values = json_decode($request->getContent());
+
+     //=======================Ajout Partenaire==============================//  
+
+     $partenaire =new Partenaires();  
     
+     $form = $this->createForm(PartenaireType::class, $partenaire);
+     $form->handleRequest($request);
+     $Values =$request->request->all();
+     $form->submit($Values);
+     $partenaire->setEtat('bloquer');
+    $entityManager->persist($partenaire);
+     $entityManager->flush();
+
         //======================= creer admin du partenaire====================//
-        $profit="";
-        if (isset($values->username, $values->password)) {
-            $user = new User();
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+        $Values =$request->request->all();
+        $form->submit($Values);
+        $Files=$request->files->all()['imageName'];
 
-            $user->setUsername($values->username);
-            $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
-            $profit=$values->profit;
-             if ($profit=='admin') {
-                $user->setRoles(['ROLE_ADMIN_PART']);
-            }
-            else{
-                $data =[
-                    'statu'=>400,
-                    'messag'=>'Ce profit n\'existe pas'
-                ];
-                return new JsonResponse($data ,400);
-            }
-            $user->setNom($values->nom);
-            $user->setPrenom($values->prenom);
-            $user->setAdresse($values->adre);
-            $user->setTelephone($values->tel);
-            $user->setEmail($values->email);
-            $user->setEtat($values->status);
-
+        var_dump($Values);
+        
+        $user->setPassword($passwordEncoder->encodePassword($user,$form->get('plainPassword')->getData()));
+        $user->setRoles(["ROLE_ADMIN"]);
+        $user->setImageFile($Files);
+        $user->setPartenaire($partenaire);
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-
-
+        //   $errors = $validator->validate($user);
+        //         if(count($errors)) {
+        //             $errors = $serializer->serialize($errors, 'json');
+        //             return new Response($errors, 500, [
+        //                 'Content-Type' => 'application/json'
+        //             ]);
+        //         } 
 
             //============================creer un compte bancaire==================//      
 
@@ -74,44 +82,29 @@ class AdminSystemController extends FOSRestController
             $heure = date('H');
             $minutes = date('i');
             $seconde = date('s');
-            $code = ($annee . $mois . $jour . $heure . $minutes . $seconde);
+            $code = ($annee.$mois.$jour.$heure.$minutes.$seconde);
             $compb->setNumCompt($code);
             $compb->setSolde("0");
+            $compb->setPartenaire($partenaire);
 
             $entityManager->persist($compb); 
             $entityManager->flush();
 
-        //=======================Ajout Partenaire==============================//  
-
-        $partenaire =new Partenaires();  
-
-        $partenaire->setRaisonSocial($values->raisonSocial);
-        $partenaire->setNinea($values->ninea);
-        $partenaire->setAdresse($values->adresse);
-        $partenaire->setTelephone($values->telephone);
-        $partenaire->setEtat($values->etat);
-        $partenaire->addUser($user);
-        $partenaire->addComptBancaire($compb);
-        
-        $entityManager->persist($partenaire);
-        $entityManager->flush();
-
-
-        $data = [
+        $data =[
             'STATUS' => 201,
             'MESSAGE' => 'Le partenaire a été créé son compte bancaire et son administrateur',
         ];
 
         return new JsonResponse($data, 201);
-    }
-    $data = [
+    
+    $data =[
         'status_1' => 500,
         'message_1' => 'Vous devez renseigner les autres champs',
     ];
 
     return new JsonResponse($data, 500);
 
-    }
+}
 
     /**
      * @Rest\Get("/partenaires", name="find_partenaires")

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Depot;
 use App\Entity\Partenaires;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,8 @@ use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -84,7 +87,8 @@ class User implements UserInterface
  /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
-     * @Vich\UploadableField(mapping="user", fileNameProperty="imageName")
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="imageName")
+     * @Assert\Image()
      * 
      * @var File
      */
@@ -332,6 +336,27 @@ class User implements UserInterface
 
         return $this;
     }
+    /* Get the value of updatedAt
+    *
+    * @return  \DateTime
+    */ 
+   public function getUpdatedAt()
+   {
+       return $this->updatedAt;
+   }
 
+   /*
+    * Set the value of updatedAt
+    *
+    * @param  \DateTime  $updatedAt
+    *
+    * @return  self
+    */ 
+   public function setUpdatedAt(\DateTime $updatedAt)
+   {
+       $this->updatedAt = $updatedAt;
+
+       return $this;
+   }
   
 }
