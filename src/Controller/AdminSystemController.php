@@ -29,10 +29,10 @@ class AdminSystemController extends FOSRestController
 {
      /**
      * @Route("/admin", name="super", methods={"POST","GET"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function admin(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
-        $values = json_decode($request->getContent());
 
      //=======================Ajout Partenaire==============================//  
 
@@ -63,13 +63,7 @@ class AdminSystemController extends FOSRestController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-        //   $errors = $validator->validate($user);
-        //         if(count($errors)) {
-        //             $errors = $serializer->serialize($errors, 'json');
-        //             return new Response($errors, 500, [
-        //                 'Content-Type' => 'application/json'
-        //             ]);
-        //         } 
+             
 
             //============================creer un compte bancaire==================//      
 
