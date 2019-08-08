@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class AdminContollerTest extends WebTestCase
 {
 
-    /*
+    
     //=====================ajout Partenaire============//
      public function testAjoutP()
     {
@@ -17,7 +17,21 @@ class AdminContollerTest extends WebTestCase
         );
         $crawler = $client->request('POST', '/api/admin',[],[],
         ['CONTENT_TYPE' => 'application/json'],
-        '{  "raisonSocial":"mayaService","ninea": "maya215","adresse": "Parcelle","telephone": 33918451,"etat": "debloquer","username":"maya","password":"maya", "profit":"admin", "nom":"ngom","prenom":"abdoulaye", "tel": "776418887", "adre":"kounoune", "email":"j@gmail.com", "status":"bloquer", "solde":"75000"}');
+        '{  "raisonSocial":"mayaService",
+            "ninea": "maya215",
+            "adresse": "Parcelle",
+            "telephone": 33918451,
+            "username":"maya",
+            "password":"maya",
+            "nom":"ngom",
+            "prenom":"abdoulaye",
+            "telephone": "776418887", 
+            "adresse":"kounoune", 
+            "email":"j@gmail.com",
+            "etat":"bloquer",
+            "solde":"0",
+            "imageName":["1.png"]
+        }');
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(201, $client->getResponse()->getStatusCode());
@@ -43,11 +57,17 @@ class AdminContollerTest extends WebTestCase
         );
         $crawler = $client->request('POST', '/api/admin',[],[],
         ['CONTENT_TYPE' => 'application/json'],
-        '{"raisonSocial":"ngomSA","ninea": "","adresse": "Mermoz","telephone": ,"etat": "debloquer"}');
+        '{
+            "raisonSocial":"ngomSA",
+            "ninea": "",
+            "adresse": "Mermoz",
+            "telephone": ,
+            "etat": "debloquer"
+        }');
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(400, $client->getResponse()->getStatusCode());
-    } 
+    } /*
     //========================ajout Compt Bancaire ====================//
     public function testAddComptBok()
     {
@@ -80,7 +100,7 @@ class AdminContollerTest extends WebTestCase
         $rep = $client->getResponse();
         var_dump($rep);
         $this->assertSame(400, $client->getResponse()->getStatusCode());
-    }*/
+    }
     //===================================faire un depot =======================//
      public function testAddDepotOK()
     {

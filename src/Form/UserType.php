@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Partenaires;
+use Doctrine\DBAL\Types\ArrayType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -39,8 +40,8 @@ class UserType extends AbstractType
             ->add('email')
             ->add('telephone')
             ->add('adresse')
-            ->add('etat')
             ->add('imageFile',VichImageType::class)
+            ->add('partenaire',EntityType::class ,['class'=>Partenaires::class])
         ;
     }
 

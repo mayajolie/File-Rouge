@@ -9,6 +9,7 @@ return [
     'bloquer' => [['id'], ['_controller' => 'App\\Controller\\AdminSystemController::bloquerPartenaie'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/ajout']], [], []],
     'compt' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::ajoutComptB'], [], [['text', '/api/comptB']], [], []],
     'depot' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::Depot'], [], [['text', '/api/depot']], [], []],
+    'user_new' => [[], ['_controller' => 'App\\Controller\\UserController::addUser'], [], [['text', '/api/new']], [], []],
     'register' => [[], ['_controller' => 'App\\Controller\\UserController::admin'], [], [['text', '/api/register']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UserController::login'], [], [['text', '/api/loginchek']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', 'index', 'index', true], ['text', '/api']], [], []],

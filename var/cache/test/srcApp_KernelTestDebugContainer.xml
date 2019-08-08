@@ -445,6 +445,12 @@
     <service id="App\Form\ComptBanType" class="App\Form\ComptBanType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
+    <service id="App\Form\PartenaireType" class="App\Form\PartenaireType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="App\Form\UserType" class="App\Form\UserType" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
     <service id="App\Repository\ComptBancaireRepository" class="App\Repository\ComptBancaireRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -747,6 +753,8 @@
       </argument>
       <argument type="collection">
         <argument>App\Form\ComptBanType</argument>
+        <argument>App\Form\PartenaireType</argument>
+        <argument>App\Form\UserType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\ChoiceType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FileType</argument>
@@ -1028,6 +1036,8 @@
         <argument key="App\DataFixtures\AppFixtures" type="service" id="App\DataFixtures\AppFixtures" on-invalid="ignore_uninitialized"/>
         <argument key="App\DataFixtures\UserFixtures" type="service" id="App\DataFixtures\UserFixtures" on-invalid="ignore_uninitialized"/>
         <argument key="App\Form\ComptBanType" type="service" id="App\Form\ComptBanType" on-invalid="ignore_uninitialized"/>
+        <argument key="App\Form\PartenaireType" type="service" id="App\Form\PartenaireType" on-invalid="ignore_uninitialized"/>
+        <argument key="App\Form\UserType" type="service" id="App\Form\UserType" on-invalid="ignore_uninitialized"/>
         <argument key="App\Repository\ComptBancaireRepository" type="service" id="App\Repository\ComptBancaireRepository" on-invalid="ignore_uninitialized"/>
         <argument key="App\Repository\DepotRepository" type="service" id="App\Repository\DepotRepository" on-invalid="ignore_uninitialized"/>
         <argument key="App\Repository\PartenairesRepository" type="service" id="App\Repository\PartenairesRepository" on-invalid="ignore_uninitialized"/>
@@ -1295,7 +1305,7 @@
         <argument key="api_platform.validator" type="service" id="api_platform.validator" on-invalid="ignore_uninitialized"/>
         <argument key="argument_metadata_factory" type="service" id="argument_metadata_factory" on-invalid="ignore_uninitialized"/>
         <argument key="argument_resolver" type="service" id="debug.argument_resolver" on-invalid="ignore_uninitialized"/>
-        <argument key="argument_resolver.controller_locator" type="service" id=".service_locator.QZj7Nbo" on-invalid="ignore_uninitialized"/>
+        <argument key="argument_resolver.controller_locator" type="service" id=".service_locator.wPXgkul" on-invalid="ignore_uninitialized"/>
         <argument key="argument_resolver.default" type="service" id="debug.argument_resolver.default" on-invalid="ignore_uninitialized"/>
         <argument key="argument_resolver.not_tagged_controller" type="service" id="debug.argument_resolver.not_tagged_controller" on-invalid="ignore_uninitialized"/>
         <argument key="argument_resolver.request" type="service" id="debug.argument_resolver.request" on-invalid="ignore_uninitialized"/>
@@ -1824,7 +1834,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension" public="false">
-      <argument type="service" id=".service_locator.9QNcEEF"/>
+      <argument type="service" id=".service_locator.AmVZNd0"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -5651,6 +5661,10 @@
     <service id=".abstract.instanceof.App\DataFixtures\UserFixtures" class="App\DataFixtures\UserFixtures" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\ComptBanType" class="App\Form\ComptBanType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\ComptBanType" class="App\Form\ComptBanType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\PartenaireType" class="App\Form\PartenaireType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\PartenaireType" class="App\Form\PartenaireType" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\UserType" class="App\Form\UserType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\UserType" class="App\Form\UserType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\ComptBancaireRepository" class="App\Repository\ComptBancaireRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\ComptBancaireRepository" class="App\Repository\ComptBancaireRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\DepotRepository" class="App\Repository\DepotRepository" autowire="true" abstract="true"/>
@@ -5687,6 +5701,14 @@
         <argument key="viewhandler" type="service" id="fos_rest.view_handler.default"/>
       </argument>
     </service>
+    <service id=".service_locator..EwH3.j" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="passwordEncoder" type="service" id="security.user_password_encoder.generic"/>
+        <argument key="serializer" type="service" id="serializer"/>
+        <argument key="validator" type="service" id="validator"/>
+      </argument>
+    </service>
     <service id=".service_locator.9cYN13S" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -5695,7 +5717,7 @@
         <argument key="serializer" type="service" id="serializer"/>
       </argument>
     </service>
-    <service id=".service_locator.QZj7Nbo" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.wPXgkul" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AdminSystemController::Depot" type="service" id=".service_locator.ZIsCxOI"/>
@@ -5703,12 +5725,14 @@
         <argument key="App\Controller\AdminSystemController::ajoutComptB" type="service" id=".service_locator.ZIsCxOI"/>
         <argument key="App\Controller\AdminSystemController::bloquerPartenaie" type="service" id=".service_locator.V84UHq3"/>
         <argument key="App\Controller\AdminSystemController::setViewHandler" type="service" id=".service_locator.l2alLEu"/>
+        <argument key="App\Controller\UserController::addUser" type="service" id=".service_locator..EwH3.j"/>
         <argument key="App\Controller\UserController::admin" type="service" id=".service_locator.9cYN13S"/>
         <argument key="App\Controller\AdminSystemController:Depot" type="service" id=".service_locator.ZIsCxOI"/>
         <argument key="App\Controller\AdminSystemController:admin" type="service" id=".service_locator.JBoVXlr"/>
         <argument key="App\Controller\AdminSystemController:ajoutComptB" type="service" id=".service_locator.ZIsCxOI"/>
         <argument key="App\Controller\AdminSystemController:bloquerPartenaie" type="service" id=".service_locator.V84UHq3"/>
         <argument key="App\Controller\AdminSystemController:setViewHandler" type="service" id=".service_locator.l2alLEu"/>
+        <argument key="App\Controller\UserController:addUser" type="service" id=".service_locator..EwH3.j"/>
         <argument key="App\Controller\UserController:admin" type="service" id=".service_locator.9cYN13S"/>
       </argument>
     </service>
@@ -5771,10 +5795,12 @@
       <argument type="service" id="debug.argument_resolver.not_tagged_controller.inner"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.9QNcEEF" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.AmVZNd0" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Form\ComptBanType" type="service" id="App\Form\ComptBanType"/>
+        <argument key="App\Form\PartenaireType" type="service" id="App\Form\PartenaireType"/>
+        <argument key="App\Form\UserType" type="service" id="App\Form\UserType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service" id="form.type.entity"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service" id="form.type.choice"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\FileType" type="service" id="form.type.file"/>
@@ -5982,12 +6008,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.QZj7Nbo"/>
+      <argument type="service" id=".service_locator.wPXgkul"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.QZj7Nbo"/>
+      <argument type="service" id=".service_locator.wPXgkul"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -6322,7 +6348,7 @@
     <service id="Vich\UploaderBundle\Form\Type\VichImageType" alias="vich_uploader.form.type.image" public="false"/>
     <service id="Vich\UploaderBundle\Templating\Helper\UploaderHelper" alias="vich_uploader.templating.helper.uploader_helper" public="false"/>
     <service id="Vich\UploaderBundle\Twig\Extension\UploaderExtension" alias="vich_uploader.twig.extension.uploader" public="false"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.QZj7Nbo"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.wPXgkul"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>

@@ -11,7 +11,6 @@ return [
     'compt' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::ajoutComptB'], [], [['text', '/api/comptB']], [], []],
     'depot' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::Depot'], [], [['text', '/api/depot']], [], []],
     'user_new' => [[], ['_controller' => 'App\\Controller\\UserController::addUser'], [], [['text', '/api/new']], [], []],
-    'register' => [[], ['_controller' => 'App\\Controller\\UserController::admin'], [], [['text', '/api/register']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UserController::login'], [], [['text', '/api/loginchek']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', 'index', 'index', true], ['text', '/api']], [], []],
     'api_doc' => [['_format'], ['_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], [], [['variable', '.', '[^/]++', '_format', true], ['text', '/api/docs']], [], []],

@@ -43,26 +43,27 @@ class AdminSystemController extends FOSRestController
      $Values =$request->request->all();
      $form->submit($Values);
      $partenaire->setEtat('bloquer');
-    $entityManager->persist($partenaire);
-     $entityManager->flush();
+     $entityManager->persist($partenaire);
 
         //======================= creer admin du partenaire====================//
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         $Values =$request->request->all();
+        
+
         $form->submit($Values);
         $Files=$request->files->all()['imageName'];
 
-        var_dump($Values);
+       
         
         $user->setPassword($passwordEncoder->encodePassword($user,$form->get('plainPassword')->getData()));
         $user->setRoles(["ROLE_ADMIN"]);
+        $user->setEtat('bloquer');
         $user->setImageFile($Files);
         $user->setPartenaire($partenaire);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
-            $entityManager->flush();
              
 
             //============================creer un compte bancaire==================//      
@@ -83,21 +84,26 @@ class AdminSystemController extends FOSRestController
 
             $entityManager->persist($compb); 
             $entityManager->flush();
+            if ($entityManager->flush()) {
+                $data =[
+                    'status_1' => 500,
+                    'message_1' => 'Vous devez renseigner les autres champs',
+                ];
+            
+                return new JsonResponse($data, 500);
+                
+            } else {
+  
+                $data =[
+                    'STATUS' => 201,
+                    'MESSAGE' => 'Le partenaire a été créé son compte bancaire et son administrateur',
+                ];
+                return new JsonResponse($data, 201);
 
-        $data =[
-            'STATUS' => 201,
-            'MESSAGE' => 'Le partenaire a été créé son compte bancaire et son administrateur',
-        ];
+                        }
+            
 
-        return new JsonResponse($data, 201);
-    
-    $data =[
-        'status_1' => 500,
-        'message_1' => 'Vous devez renseigner les autres champs',
-    ];
-
-    return new JsonResponse($data, 500);
-
+  
 }
 
     /**
