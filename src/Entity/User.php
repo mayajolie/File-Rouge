@@ -130,6 +130,11 @@ class User implements UserInterface
     private $compteBancaire;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Transaction", mappedBy="user")
+     */
+    private $transactions;
+
+    /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the update. If this
      * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
@@ -166,6 +171,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->depots = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -386,6 +392,37 @@ class User implements UserInterface
    public function setCompteBancaire(?int $compteBancaire): self
    {
        $this->compteBancaire = $compteBancaire;
+
+       return $this;
+   }
+
+   /**
+    * @return Collection|Transaction[]
+    */
+   public function getTransactions(): Collection
+   {
+       return $this->transactions;
+   }
+
+   public function addTransaction(Transaction $transaction): self
+   {
+       if (!$this->transactions->contains($transaction)) {
+           $this->transactions[] = $transaction;
+           $transaction->setUser($this);
+       }
+
+       return $this;
+   }
+
+   public function removeTransaction(Transaction $transaction): self
+   {
+       if ($this->transactions->contains($transaction)) {
+           $this->transactions->removeElement($transaction);
+           // set the owning side to null (unless already changed)
+           if ($transaction->getUser() === $this) {
+               $transaction->setUser(null);
+           }
+       }
 
        return $this;
    }

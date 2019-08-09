@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transaction index{% endblock %}
+
+{% block body %}
+    <h1>Transaction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NomE</th>
+                <th>PrenomE</th>
+                <th>CniE</th>
+                <th>DateTrans</th>
+                <th>NomB</th>
+                <th>PrenomB</th>
+                <th>CniB</th>
+                <th>Montant</th>
+                <th>TypeTrans</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.nomE }}</td>
+                <td>{{ transaction.prenomE }}</td>
+                <td>{{ transaction.cniE }}</td>
+                <td>{{ transaction.dateTrans ? transaction.dateTrans|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ transaction.nomB }}</td>
+                <td>{{ transaction.prenomB }}</td>
+                <td>{{ transaction.cniB }}</td>
+                <td>{{ transaction.montant }}</td>
+                <td>{{ transaction.typeTrans }}</td>
+                <td>
+                    <a href="{{ path('transaction_show', {'id': transaction.id}) }}">show</a>
+                    <a href="{{ path('transaction_edit', {'id': transaction.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('transaction_new') }}">Create new</a>
+{% endblock %}
