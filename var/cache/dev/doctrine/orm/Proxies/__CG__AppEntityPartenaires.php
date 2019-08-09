@@ -64,10 +64,10 @@ class Partenaires extends \App\Entity\Partenaires implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'raisonSocial', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'ninea', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'users'];
+            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'raisonSocial', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'ninea', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'users', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'comptBancaires'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'raisonSocial', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'ninea', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'users'];
+        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'id', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'raisonSocial', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'ninea', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'users', '' . "\0" . 'App\\Entity\\Partenaires' . "\0" . 'comptBancaires'];
     }
 
     /**

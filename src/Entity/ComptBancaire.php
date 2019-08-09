@@ -30,16 +30,17 @@ class ComptBancaire
      */
     private $solde;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaires", inversedBy="comptBancaires")
-     */
-    private $partenaire;
-
     
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="numeroCompt")
      */
     private $depots;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaires", inversedBy="comptBancaires")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $partenaire;
 
     public function __construct()
     {
@@ -75,17 +76,7 @@ class ComptBancaire
         return $this;
     }
 
-    public function getPartenaire(): ?Partenaires
-    {
-        return $this->partenaire;
-    }
-
-    public function setPartenaire(?Partenaires $partenaire): self
-    {
-        $this->partenaire = $partenaire;
-
-        return $this;
-    }
+   
 
    
 
@@ -116,6 +107,18 @@ class ComptBancaire
                 $depot->setNumeroCompt(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPartenaire(): ?Partenaires
+    {
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaires $partenaire): self
+    {
+        $this->partenaire = $partenaire;
 
         return $this;
     }

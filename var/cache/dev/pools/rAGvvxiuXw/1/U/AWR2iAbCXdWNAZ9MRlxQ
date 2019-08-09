@@ -40,7 +40,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 1 => 'object',
             ],
             'nullable' => [
-                1 => true,
+                1 => false,
             ],
             'class' => [
                 1 => 'App\\Entity\\Partenaires',

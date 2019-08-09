@@ -8,9 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\Regex;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -58,7 +60,13 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="telephone",type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Vous devez insérer un téléphone")
+     * @Assert\Regex(
+     *     pattern="/^(\+[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\-]*$/",
+     *     match=true,
+     *     message="Votre numero ne doit pas contenir de lettre"
+     * )
      */
     private $telephone;
 
@@ -88,7 +96,15 @@ class User implements UserInterface
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      * 
      * @Vich\UploadableField(mapping="user_image", fileNameProperty="imageName")
-     * @Assert\Image()
+     * @Assert\File(
+     *     maxSize = "5M",
+     *     mimeTypes = {
+     *         "image/jpeg",
+     *         "image/pjpeg",
+     *         "image/png",
+     *     },
+     * mimeTypesMessage = "Veuillez saisir un bon format d\'image"
+     * )
      * 
      * @var File
      */
@@ -107,6 +123,11 @@ class User implements UserInterface
      * @var \DateTime
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    private $compteBancaire;
 
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -353,6 +374,18 @@ class User implements UserInterface
    public function setUpdatedAt(\DateTime $updatedAt)
    {
        $this->updatedAt = $updatedAt;
+
+       return $this;
+   }
+
+   public function getCompteBancaire(): ?int
+   {
+       return $this->compteBancaire;
+   }
+
+   public function setCompteBancaire(?int $compteBancaire): self
+   {
+       $this->compteBancaire = $compteBancaire;
 
        return $this;
    }

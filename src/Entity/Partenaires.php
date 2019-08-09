@@ -2,10 +2,14 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use FOS\RestBundle\Validator\Constraints\Regex;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
@@ -36,7 +40,13 @@ class Partenaires
     private $adresse;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="telephone",type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Vous devez insérer un téléphone")
+     * @Assert\Regex(
+     *     pattern="/^(\+[1-9][0-9]*(\([0-9]*\)|-[0-9]*-))?[0]?[1-9][0-9\-]*$/",
+     *     match=true,
+     *     message="Votre numero ne doit pas contenir de lettre"
+     * )
      */
     private $telephone;
 
@@ -49,6 +59,11 @@ class Partenaires
      * @ORM\OneToMany(targetEntity="App\Entity\User", mappedBy="partenaire")
      */
     private $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ComptBancaire", mappedBy="partenaire")
+     */
+    private $comptBancaires;
 
    
 
@@ -184,4 +199,6 @@ class Partenaires
 
         return $this;
     }
+
+    
 }

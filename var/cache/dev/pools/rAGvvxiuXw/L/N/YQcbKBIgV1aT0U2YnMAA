@@ -19,7 +19,6 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                     'etat',
                     'users',
                     'comptBancaires',
-                    'comptBancaire',
                 ],
             ],
         ],

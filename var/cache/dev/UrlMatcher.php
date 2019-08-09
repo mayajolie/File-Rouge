@@ -15,6 +15,7 @@ return [
         '/api/depot' => [[['_route' => 'depot', '_controller' => 'App\\Controller\\AdminSystemController::Depot'], null, ['POST' => 0], null, false, false, null]],
         '/api/new' => [[['_route' => 'user_new', '_controller' => 'App\\Controller\\UserController::addUser'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
         '/api/loginchek' => [[['_route' => 'login', '_controller' => 'App\\Controller\\UserController::login'], null, ['POST' => 0, 'GET' => 1], null, false, false, null]],
+        '/api/allouer' => [[['_route' => 'bloq', '_controller' => 'App\\Controller\\UserController::allouerCompte'], null, ['POST' => 0], null, false, false, null]],
         '/api/logincheck' => [[['_route' => 'api_login_check'], null, null, null, false, false, null]],
     ],
     [ // $regexpList

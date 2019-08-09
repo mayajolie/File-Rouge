@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Entity\Partenaires;
+use App\Entity\CompBancaire;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,12 +39,18 @@ class UserController extends AbstractController
         switch ($profil) {
             case 1:
                 $user->setRoles(['ROLE_ADMIN']);
+                $parte=$this->getUser()->getPartenaire();
+                $user->setPartenaire($parte);
                 break;
             case 2:
                 $user->setRoles(['ROLE_CAISIER']);
                 break;
             case 3:
+               
                 $user->setRoles(['ROLE_USER']);
+                $parte=$this->getUser()->getPartenaire();
+                $user->setPartenaire($parte);
+
                 break;
             default:
                 $data = [
@@ -59,8 +66,6 @@ class UserController extends AbstractController
 
         $user->setImageFile($Files);
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
           $errors = $validator->validate($user);
                 if(count($errors)) {
                     $errors = $serializer->serialize($errors, 'json');
@@ -68,7 +73,8 @@ class UserController extends AbstractController
                         'Content-Type' => 'application/json'
                     ]);
                 } 
-                
+                $entityManager->persist($user);
+                $entityManager->flush();
                 $data = [
                   'statut' => 201,
                   'massage' => 'L"utilisateur été bien ajouté'
@@ -92,4 +98,40 @@ class UserController extends AbstractController
             'roles' => $user->getRoles(),
         ]);
     }
+
+    /**
+     * @Route("/allouer", name="bloq", methods={"POST"})
+     */
+    public function allouerCompte(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    {
+        $user=$this->getUser();
+        $part=$user->getPartenaire();
+        $compt=$part->getComptBancaires();
+       $numero=$compt[0]->getNumCompt();
+
+        foreach ($compt as $value) {
+            if ($value->getNumCompt() != $numero) {
+                $user->setCompteBancaire($value->getNumCompt());
+                var_dump($user);die();  
+
+                break;
+            }
+        }
+        $errors = $validator->validate($bloqueP);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+
+            return new Response($errors, 500, [
+                'Content-Type' => 'application/json',
+            ]);
+        }
+        $entityManager->flush();
+        $data = [
+            'statu' => 200,
+            'messag' => 'L \'etat du partenaire a bien été mis à jour',
+        ];
+
+        return new JsonResponse($data);
+    }
+
 }

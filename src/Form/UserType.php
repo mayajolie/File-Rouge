@@ -41,7 +41,7 @@ class UserType extends AbstractType
             ->add('telephone')
             ->add('adresse')
             ->add('imageFile',VichImageType::class)
-            ->add('partenaire',EntityType::class ,['class'=>Partenaires::class])
+           // ->add('partenaire',EntityType::class ,['class'=>Partenaires::class])
         ;
     }
 

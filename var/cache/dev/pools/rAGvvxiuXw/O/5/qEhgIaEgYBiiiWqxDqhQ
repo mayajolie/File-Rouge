@@ -20,7 +20,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 true,
             ],
             'required' => [
-                false,
+                true,
             ],
             'identifier' => [
                 false,

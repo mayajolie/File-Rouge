@@ -6,6 +6,8 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
     $o = [
         clone (($p = &Registry::$prototypes)['ApiPlatform\\Core\\Metadata\\Property\\PropertyMetadata'] ?? Registry::p('ApiPlatform\\Core\\Metadata\\Property\\PropertyMetadata')),
         clone ($p['Symfony\\Component\\PropertyInfo\\Type'] ?? Registry::p('Symfony\\Component\\PropertyInfo\\Type')),
+        clone $p['Symfony\\Component\\PropertyInfo\\Type'],
+        clone $p['Symfony\\Component\\PropertyInfo\\Type'],
     ],
     null,
     [
@@ -18,6 +20,12 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
             ],
             'writable' => [
                 true,
+            ],
+            'readableLink' => [
+                false,
+            ],
+            'writableLink' => [
+                false,
             ],
             'required' => [
                 false,
@@ -32,15 +40,28 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
         'Symfony\\Component\\PropertyInfo\\Type' => [
             'builtinType' => [
                 1 => 'object',
+                'int',
+                'object',
             ],
             'nullable' => [
                 1 => false,
+                false,
+                false,
             ],
             'class' => [
                 1 => 'Doctrine\\Common\\Collections\\Collection',
+                3 => 'App\\Entity\\ComptBancaire',
             ],
             'collection' => [
-                1 => false,
+                1 => true,
+                false,
+                false,
+            ],
+            'collectionKeyType' => [
+                1 => $o[2],
+            ],
+            'collectionValueType' => [
+                1 => $o[3],
             ],
         ],
     ],

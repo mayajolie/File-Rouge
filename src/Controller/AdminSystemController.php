@@ -31,11 +31,20 @@ class AdminSystemController extends FOSRestController
      * @Route("/admin", name="super", methods={"POST","GET"})
      * @IsGranted("ROLE_SUPER_ADMIN")
      */
-    public function admin(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
+    public function admin(Request $request, SerializerInterface $serializer,UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager,ValidatorInterface $validator)
     {
 
      //=======================Ajout Partenaire==============================//  
-
+         //generer un numero de compte bancaire
+         $code="";
+         $jour = date('d');
+         $mois = date('m');
+         $annee = date('Y');
+         $heure = date('H');
+         $minutes = date('i');
+         $seconde = date('s');
+         $code = ($annee.$mois.$jour.$heure.$minutes.$seconde);
+         
      $partenaire =new Partenaires();  
     
      $form = $this->createForm(PartenaireType::class, $partenaire);
@@ -50,17 +59,14 @@ class AdminSystemController extends FOSRestController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         $Values =$request->request->all();
-        
-
         $form->submit($Values);
         $Files=$request->files->all()['imageName'];
+        $user->setImageFile($Files);
 
-       
-        
         $user->setPassword($passwordEncoder->encodePassword($user,$form->get('plainPassword')->getData()));
         $user->setRoles(["ROLE_ADMIN"]);
         $user->setEtat('bloquer');
-        $user->setImageFile($Files);
+        $user->setCompteBancaire($code);
         $user->setPartenaire($partenaire);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -69,30 +75,22 @@ class AdminSystemController extends FOSRestController
             //============================creer un compte bancaire==================//      
 
             $compb = new ComptBancaire();
-            //generer un numero de compte bancaire
-            $code="";
-            $jour = date('d');
-            $mois = date('m');
-            $annee = date('Y');
-            $heure = date('H');
-            $minutes = date('i');
-            $seconde = date('s');
-            $code = ($annee.$mois.$jour.$heure.$minutes.$seconde);
+           
             $compb->setNumCompt($code);
             $compb->setSolde("0");
             $compb->setPartenaire($partenaire);
 
+            $errors = $validator->validate($user);
+            if(count($errors)) {
+                $errors = $serializer->serialize($errors, 'json');
+                return new Response($errors, 500, [
+                    'Content-Type' => 'application/json'
+                ]);
+            } 
             $entityManager->persist($compb); 
             $entityManager->flush();
-            if ($entityManager->flush()) {
-                $data =[
-                    'status_1' => 500,
-                    'message_1' => 'Vous devez renseigner les autres champs',
-                ];
-            
-                return new JsonResponse($data, 500);
                 
-            } else {
+            
   
                 $data =[
                     'STATUS' => 201,
@@ -100,11 +98,11 @@ class AdminSystemController extends FOSRestController
                 ];
                 return new JsonResponse($data, 201);
 
-                        }
+                        
             
 
   
-}
+    }
 
     /**
      * @Rest\Get("/partenaires", name="find_partenaires")
@@ -127,6 +125,7 @@ class AdminSystemController extends FOSRestController
     public function bloquerPartenaie(Request $request, SerializerInterface $serializer, Partenaires $partenaire, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $bloqueP = $entityManager->getRepository(Partenaires::class)->find($partenaire->getId());
+        var_dump($bloqueP); die();
         $data = json_decode($request->getContent());
         foreach ($data as $key => $value) {
             if ($key && !empty($value)) {
