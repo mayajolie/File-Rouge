@@ -18,9 +18,6 @@ class TransactionType extends AbstractType
             ->add('nomB')
             ->add('prenomB')
             ->add('cniB')
-           
-            ->add('typeTrans')
-            ->add('user')
         ;
     }
 
@@ -28,6 +25,8 @@ class TransactionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Transaction::class,
+            'csrf_protection'=>false
+
         ]);
     }
 }

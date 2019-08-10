@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tarifs;
+use App\Entity\Commission;
 use App\Entity\Transaction;
 use App\Entity\ComptBancaire;
 use App\Form\TransactionType;
@@ -11,10 +12,12 @@ use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 /**
  * @Route("/api")
@@ -36,76 +39,82 @@ class TransactionController extends AbstractController
      */
     public function new(Request  $request, SerializerInterface $serializer, EntityManagerInterface $entityManager,ValidatorInterface $validator): Response
     {
-        
-   
+        $commi=new Commission();
         $transaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $transaction);
         $form->handleRequest($request);
         $Values =$request->request->all();
         $form->submit($Values);
-        $transaction->setDateTrans(new \DateTime());
-        //$montant=$Values['montant'];
-        //recuper id de lutulisateur qui fait le transaction
+
+        $code=date('i').date('s');
+        $transaction->setCode($code);
+
+        //recuper  l'utilisateur qui fait le transaction
         $user=$this->getUser();
+     
+        $transaction->setDateTrans(new \DateTime());
+        $transaction->setUser($user);
+        $montant=$Values['montant'];
+        $transaction->setMontant($montant);
+
+
         //recupere le numero du compte bancaire
-        $part=$user->getCompteBancaire();
+        $part=$this->getUser()->getCompteBancaire();
         //on recupere le montant qui est dans ce compte
         $repo = $this->getDoctrine()->getRepository(ComptBancaire::class);
         $numcompt = $repo->findOneBy(['numCompt'=>$part]);
         $val=$numcompt->getSolde();
-        //on recupere lensemble des tarifs
         $repo = $this->getDoctrine()->getRepository(Tarifs::class);
         $tar = $repo->findAll();
-       // var_dump($tar); die();
+       //on compare le montant qu'on veut recuperer et le montant qui existe dans le compte
+       if ($montant<$val){
         foreach ($tar as $value) {
             $min=$value->getBorneInferieur();
             $max=$value->getBorneSuperieur();
-            if(($min<="30000") && ("30000">=$max)){
+            if(($min<=$montant) && ($montant>=$max)){
                 $com=$value->getValeur();
+            
             }
         }
-        $etat=(($com*30)/100);
-        $envoye=(($com*3)/100);
-
-
-        var_dump($etat);
-
-        die();
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //on compare le montant qu'on veut recuperer et le montant qui existe dans le compte
-        if ($montant<$val){
-        //on recupere l    
-        foreach ($tar as $value) {
-            $min=$value->getBorneInferieur();
-            $max=$value->getBorneSuperieur();
-            if(($min<="3000") && ("3000">=$max)){
-                $com=$value->getValeur();
-            }
-        }
-        $etat=(($com*30)/100);
-        }
-        
-        var_dump($val); die();
-        
-
         $type=$Values['type'];
-         if ($type=='1') {
+        $system=(($com*40)/100);
+        if ($type =='1') {
+            //incrementant du solde du partenaire du montant du depot
+          $numcompt->setSolde($numcompt->getSolde() + $montant);
+          $numcompt->setSolde($numcompt->getSolde() + $system);
+          $transaction->setTypeTrans('Retrait');
+
+      }
+      if ($type =='2') {
+        $numcompt->setSolde($numcompt->getSolde() -$montant);
+        $numcompt->setSolde($numcompt->getSolde() +$system);
+        $transaction->setTypeTrans('Envoye');
+    } 
+    }
+    else{
+
+        $data =[
+            'STATUS' => 201,
+            'MESSAGE' => 'votre sole ne vous permet pas deffectuer cette transaction',
+        ];
+        return new JsonResponse($data, 201);
+    }
+        $etat=(($com*30)/100);
+        $envoye=(($com*10)/100);
+        $retait=(($com*20)/100);
+       
+        $commi->setPartenaire($system);
+        $commi->setEtat($etat);
+        $commi->setEnvoi($envoye);
+        $commi->setRetrait($retait);
+        $commi->setDate(new \DateTime());
 
 
-        } 
-        elseif ($type=='2') {
-        }
         
-
+       
+    
+        
+        
         $errors = $validator->validate($user);
         if(count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
@@ -113,14 +122,15 @@ class TransactionController extends AbstractController
                 'Content-Type' => 'application/json'
             ]);
         } 
-        $entityManager->persist($compb); 
+        $entityManager->persist($transaction); 
+        $entityManager->persist($commi); 
         $entityManager->flush();
             
         
 
             $data =[
                 'STATUS' => 201,
-                'MESSAGE' => 'Le partenaire a été créé son compte bancaire et son administrateur',
+                'MESSAGE' => 'La transaction a ete bien effectuer',
             ];
             return new JsonResponse($data, 201);
        

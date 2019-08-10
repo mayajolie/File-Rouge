@@ -1,6 +1,6 @@
 <?php
 
-namespace ContainerYWt84J7;
+namespace ContainerI44sfv4;
 
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -673,6 +673,7 @@ class srcApp_KernelDevDebugContainer extends Container
         $a->setQuoteStrategy(new \Doctrine\ORM\Mapping\DefaultQuoteStrategy());
         $a->setEntityListenerResolver(new \Doctrine\Bundle\DoctrineBundle\Mapping\ContainerEntityListenerResolver($this));
         $a->setRepositoryFactory(new \Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory(new \Symfony\Component\DependencyInjection\Argument\ServiceLocator($this->getService, [
+            'App\\Repository\\CommissionRepository' => ['privates', 'App\\Repository\\CommissionRepository', 'getCommissionRepositoryService.php', true],
             'App\\Repository\\ComptBancaireRepository' => ['privates', 'App\\Repository\\ComptBancaireRepository', 'getComptBancaireRepositoryService.php', true],
             'App\\Repository\\DepotRepository' => ['privates', 'App\\Repository\\DepotRepository', 'getDepotRepositoryService.php', true],
             'App\\Repository\\PartenairesRepository' => ['privates', 'App\\Repository\\PartenairesRepository', 'getPartenairesRepositoryService.php', true],
@@ -680,6 +681,7 @@ class srcApp_KernelDevDebugContainer extends Container
             'App\\Repository\\TransactionRepository' => ['privates', 'App\\Repository\\TransactionRepository', 'getTransactionRepositoryService.php', true],
             'App\\Repository\\UserRepository' => ['privates', 'App\\Repository\\UserRepository', 'getUserRepositoryService.php', true],
         ], [
+            'App\\Repository\\CommissionRepository' => '?',
             'App\\Repository\\ComptBancaireRepository' => '?',
             'App\\Repository\\DepotRepository' => '?',
             'App\\Repository\\PartenairesRepository' => '?',
@@ -843,6 +845,9 @@ class srcApp_KernelDevDebugContainer extends Container
             return ($this->privates['session_listener'] ?? $this->getSessionListenerService());
         }, 1 => 'onFinishRequest'], 0);
         $instance->addListener('kernel.request', [0 => function () {
+            return ($this->privates['debug.debug_handlers_listener'] ?? $this->getDebug_DebugHandlersListenerService());
+        }, 1 => 'configure'], 2048);
+        $instance->addListener('console.command', [0 => function () {
             return ($this->privates['debug.debug_handlers_listener'] ?? $this->getDebug_DebugHandlersListenerService());
         }, 1 => 'configure'], 2048);
         $instance->addListener('kernel.exception', [0 => function () {
