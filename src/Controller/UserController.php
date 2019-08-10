@@ -70,7 +70,7 @@ class UserController extends AbstractController
                 if(count($errors)) {
                     $errors = $serializer->serialize($errors, 'json');
                     return new Response($errors, 500, [
-                        'Content-Type' => 'application/json'
+                        'Content-Typle' => 'applicatlion/json'
                     ]);
                 } 
                 $entityManager->persist($user);
@@ -98,13 +98,62 @@ class UserController extends AbstractController
             'roles' => $user->getRoles(),
         ]);
     }
+    /**
+     * @Route("/modif/{id}", name="bloquer", methods={"PUT"})
+     */
+    public function modifierUser(Request $request, SerializerInterface $serializer, User $user, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    {
+       
+        $user=$this->getUser();
+        
+        $part=$user->getPartenaire();
+        
+        $compt=$part->getComptBancaires();
+       var_dump($part);die();  
+       $numero=$compt[0]->getNumCompt();
+       
+        foreach ($compt as $value) {
+            if ($value->getNumCompt() != $numero) {
+                $user->setCompteBancaire($value->getNumCompt());
+                var_dump($user);die();  
 
+                break;
+            }
+        }
+        $bloqueP = $entityManager->getRepository(User::class)->find($user->getId());
+        var_dump($bloqueP); die();
+        $data = json_decode($request->getContent());
+        foreach ($data as $key => $value) {
+            if ($key && !empty($value)) {
+                $name = ucfirst($key);
+                $setter = 'set'.$name;
+                $bloqueP->$setter($value);
+            }
+        }
+        $errors = $validator->validate($bloqueP);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+
+            return new Response($errors, 500, [
+                'Content-Type' => 'application/json',
+            ]);
+        }
+        $entityManager->flush();
+        $data = [
+            'statu' => 200,
+            'messag' => 'L \'etat du partenaire a bien été mis à jour',
+        ];
+
+        return new JsonResponse($data);
+    }
     /**
      * @Route("/allouer", name="bloq", methods={"POST"})
+     * @IsGranted({"ROLE_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
      */
     public function allouerCompte(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $user=$this->getUser();
+        var_dump($user);die();  
         $part=$user->getPartenaire();
         $compt=$part->getComptBancaires();
        $numero=$compt[0]->getNumCompt();

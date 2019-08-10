@@ -17,6 +17,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 /**
@@ -29,9 +32,34 @@ class TransactionController extends AbstractController
      */
     public function index(TransactionRepository $transactionRepository): Response
     {
-        return $this->render('transaction/index.html.twig', [
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('transaction/index.html.twig', [
             'transactions' => $transactionRepository->findAll(),
         ]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream("contratprestataire.pdf", [
+            "Attachment" => false
+        ]);
+        // Send some text response
+        return new Response("Le fichier PDF a été bien générer !");
+
     }
 
     /**
@@ -90,15 +118,8 @@ class TransactionController extends AbstractController
         $numcompt->setSolde($numcompt->getSolde() +$system);
         $transaction->setTypeTrans('Envoye');
     } 
-    }
-    else{
-
-        $data =[
-            'STATUS' => 201,
-            'MESSAGE' => 'votre sole ne vous permet pas deffectuer cette transaction',
-        ];
-        return new JsonResponse($data, 201);
-    }
+    
+    
         $etat=(($com*30)/100);
         $envoye=(($com*10)/100);
         $retait=(($com*20)/100);
@@ -108,8 +129,15 @@ class TransactionController extends AbstractController
         $commi->setEnvoi($envoye);
         $commi->setRetrait($retait);
         $commi->setDate(new \DateTime());
+    }
+        else{
 
-
+            $data =[
+                'STATUS' => 201,
+                'MESSAGE' => 'votre sole ne vous permet pas deffectuer cette transaction',
+            ];
+            return new JsonResponse($data, 201);
+        }
         
        
     

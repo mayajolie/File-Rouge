@@ -5,10 +5,13 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
+ /**
+  * @Route("/api")
+  */
 class AdminPartController extends AbstractController
 {
     /**
-     * @Route("/admin/part", name="admin_part")
+     * @Route("/fd", name="adminpart")
      */
     public function index()
     {

@@ -76,10 +76,7 @@ class __TwigTemplate_1c1d34183fbc57f183485acccef2dc3e4fe885bd4bfc81e8619350c8a2c
 </style>
 
 <div class=\"example-wrapper\">
-    <h1>Hello ";
-        // line 12
-        echo twig_escape_filter($this->env, (isset($context["controller_name"]) || array_key_exists("controller_name", $context) ? $context["controller_name"] : (function () { throw new RuntimeError('Variable "controller_name" does not exist.', 12, $this->source); })()), "html", null, true);
-        echo "! ✅</h1>
+    <h1>Hello ! ✅</h1>
 
     This friendly message is coming from:
     <ul>
@@ -111,7 +108,7 @@ class __TwigTemplate_1c1d34183fbc57f183485acccef2dc3e4fe885bd4bfc81e8619350c8a2c
 
     public function getDebugInfo()
     {
-        return array (  92 => 17,  88 => 16,  81 => 12,  73 => 6,  66 => 5,  53 => 3,  36 => 1,);
+        return array (  89 => 17,  85 => 16,  73 => 6,  66 => 5,  53 => 3,  36 => 1,);
     }
 
     public function getSourceContext()
@@ -127,7 +124,7 @@ class __TwigTemplate_1c1d34183fbc57f183485acccef2dc3e4fe885bd4bfc81e8619350c8a2c
 </style>
 
 <div class=\"example-wrapper\">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Hello ! ✅</h1>
 
     This friendly message is coming from:
     <ul>

@@ -64,10 +64,10 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'prenom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\User' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\User' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\User' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'comptBancaires', '' . "\0" . 'App\\Entity\\User' . "\0" . 'depots'];
+            return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'prenom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\User' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\User' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\User' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\User' . "\0" . 'imageFile', '' . "\0" . 'App\\Entity\\User' . "\0" . 'imageName', '' . "\0" . 'App\\Entity\\User' . "\0" . 'updatedAt', '' . "\0" . 'App\\Entity\\User' . "\0" . 'compteBancaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'transactions'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'prenom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\User' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\User' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\User' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'comptBancaires', '' . "\0" . 'App\\Entity\\User' . "\0" . 'depots'];
+        return ['__isInitialized__', '' . "\0" . 'App\\Entity\\User' . "\0" . 'id', '' . "\0" . 'App\\Entity\\User' . "\0" . 'username', '' . "\0" . 'App\\Entity\\User' . "\0" . 'roles', '' . "\0" . 'App\\Entity\\User' . "\0" . 'password', '' . "\0" . 'App\\Entity\\User' . "\0" . 'nom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'prenom', '' . "\0" . 'App\\Entity\\User' . "\0" . 'email', '' . "\0" . 'App\\Entity\\User' . "\0" . 'telephone', '' . "\0" . 'App\\Entity\\User' . "\0" . 'adresse', '' . "\0" . 'App\\Entity\\User' . "\0" . 'etat', '' . "\0" . 'App\\Entity\\User' . "\0" . 'partenaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'depots', '' . "\0" . 'App\\Entity\\User' . "\0" . 'imageFile', '' . "\0" . 'App\\Entity\\User' . "\0" . 'imageName', '' . "\0" . 'App\\Entity\\User' . "\0" . 'updatedAt', '' . "\0" . 'App\\Entity\\User' . "\0" . 'compteBancaire', '' . "\0" . 'App\\Entity\\User' . "\0" . 'transactions'];
     }
 
     /**
@@ -173,6 +173,50 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function setImageFile(\Symfony\Component\HttpFoundation\File\File $imageFile = NULL): void
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setImageFile', [$imageFile]);
+
+        parent::setImageFile($imageFile);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getImageFile(): ?\Symfony\Component\HttpFoundation\File\File
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getImageFile', []);
+
+        return parent::getImageFile();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setImageName(?string $imageName): void
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setImageName', [$imageName]);
+
+        parent::setImageName($imageName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getImageName(): ?string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getImageName', []);
+
+        return parent::getImageName();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -433,39 +477,6 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getComptBancaires(): \Doctrine\Common\Collections\Collection
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getComptBancaires', []);
-
-        return parent::getComptBancaires();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addComptBancaire(\App\Entity\ComptBancaire $comptBancaire): \App\Entity\User
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addComptBancaire', [$comptBancaire]);
-
-        return parent::addComptBancaire($comptBancaire);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeComptBancaire(\App\Entity\ComptBancaire $comptBancaire): \App\Entity\User
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeComptBancaire', [$comptBancaire]);
-
-        return parent::removeComptBancaire($comptBancaire);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getDepots(): \Doctrine\Common\Collections\Collection
     {
 
@@ -494,6 +505,83 @@ class User extends \App\Entity\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeDepot', [$depot]);
 
         return parent::removeDepot($depot);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUpdatedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedAt', []);
+
+        return parent::getUpdatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedAt', [$updatedAt]);
+
+        return parent::setUpdatedAt($updatedAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCompteBancaire(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompteBancaire', []);
+
+        return parent::getCompteBancaire();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCompteBancaire(?int $compteBancaire): \App\Entity\User
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompteBancaire', [$compteBancaire]);
+
+        return parent::setCompteBancaire($compteBancaire);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTransactions(): \Doctrine\Common\Collections\Collection
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTransactions', []);
+
+        return parent::getTransactions();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTransaction(\App\Entity\Transaction $transaction): \App\Entity\User
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTransaction', [$transaction]);
+
+        return parent::addTransaction($transaction);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeTransaction(\App\Entity\Transaction $transaction): \App\Entity\User
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTransaction', [$transaction]);
+
+        return parent::removeTransaction($transaction);
     }
 
 }

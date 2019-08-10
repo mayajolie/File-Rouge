@@ -1584,14 +1584,6 @@
         <argument>2048</argument>
       </call>
       <call method="addListener">
-        <argument>console.command</argument>
-        <argument type="collection">
-          <argument type="service" id="debug.debug_handlers_listener"/>
-          <argument>configure</argument>
-        </argument>
-        <argument>2048</argument>
-      </call>
-      <call method="addListener">
         <argument>kernel.exception</argument>
         <argument type="collection">
           <argument type="service" id="debug.debug_handlers_listener"/>
@@ -5323,7 +5315,16 @@
         <argument key="validator" type="service" id="validator"/>
       </argument>
     </service>
-    <service id=".service_locator.GgbaKW9" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.sFS5.mG" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="entityManager" type="service" id="doctrine.orm.default_entity_manager"/>
+        <argument key="serializer" type="service" id="serializer"/>
+        <argument key="user" type="service" id=".errored..service_locator.sFS5.mG.App\Entity\User"/>
+        <argument key="validator" type="service" id="validator"/>
+      </argument>
+    </service>
+    <service id=".service_locator.h5Oe8AT" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AdminSystemController::Depot" type="service" id=".service_locator.ZIsCxOI"/>
@@ -5338,6 +5339,7 @@
         <argument key="App\Controller\TransactionController::show" type="service" id=".service_locator.EWX.KyZ"/>
         <argument key="App\Controller\UserController::addUser" type="service" id=".service_locator..EwH3.j"/>
         <argument key="App\Controller\UserController::allouerCompte" type="service" id=".service_locator.7zWnKy7"/>
+        <argument key="App\Controller\UserController::modifierUser" type="service" id=".service_locator.sFS5.mG"/>
         <argument key="App\Controller\AdminSystemController:Depot" type="service" id=".service_locator.ZIsCxOI"/>
         <argument key="App\Controller\AdminSystemController:admin" type="service" id=".service_locator.H3qnu8f"/>
         <argument key="App\Controller\AdminSystemController:ajoutComptB" type="service" id=".service_locator.ZIsCxOI"/>
@@ -5350,6 +5352,7 @@
         <argument key="App\Controller\TransactionController:show" type="service" id=".service_locator.EWX.KyZ"/>
         <argument key="App\Controller\UserController:addUser" type="service" id=".service_locator..EwH3.j"/>
         <argument key="App\Controller\UserController:allouerCompte" type="service" id=".service_locator.7zWnKy7"/>
+        <argument key="App\Controller\UserController:modifierUser" type="service" id=".service_locator.sFS5.mG"/>
       </argument>
     </service>
     <service id=".service_locator.LtnrEkg" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
@@ -5629,12 +5632,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.GgbaKW9"/>
+      <argument type="service" id=".service_locator.h5Oe8AT"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.GgbaKW9"/>
+      <argument type="service" id=".service_locator.h5Oe8AT"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -5673,6 +5676,7 @@
     </service>
     <service id=".errored..service_locator.V84UHq3.App\Entity\Partenaires" class="App\Entity\Partenaires"/>
     <service id=".errored..service_locator.EWX.KyZ.App\Entity\Transaction" class="App\Entity\Transaction"/>
+    <service id=".errored..service_locator.sFS5.mG.App\Entity\User" class="App\Entity\User"/>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <argument type="service" id=".service_locator.Jxzaw.G"/>
       <argument type="collection">
@@ -6014,7 +6018,7 @@
     <service id="Vich\UploaderBundle\Form\Type\VichImageType" alias="vich_uploader.form.type.image" public="false"/>
     <service id="Vich\UploaderBundle\Templating\Helper\UploaderHelper" alias="vich_uploader.templating.helper.uploader_helper" public="false"/>
     <service id="Vich\UploaderBundle\Twig\Extension\UploaderExtension" alias="vich_uploader.twig.extension.uploader" public="false"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.GgbaKW9"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.h5Oe8AT"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>

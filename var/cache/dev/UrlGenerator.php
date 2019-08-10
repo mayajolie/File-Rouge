@@ -4,10 +4,9 @@
 
 return [
     '_twig_error_test' => [['code', '_format'], ['_controller' => 'twig.controller.preview_error::previewErrorPageAction', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], []],
-    'admin_part' => [[], ['_controller' => 'App\\Controller\\AdminPartController::index'], [], [['text', '/admin/part']], [], []],
+    'adminpart' => [[], ['_controller' => 'App\\Controller\\AdminPartController::index'], [], [['text', '/api/fd']], [], []],
     'super' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::admin'], [], [['text', '/api/admin']], [], []],
-    'find_partenaires' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::index'], [], [['text', '/api/partenaires']], [], []],
-    'bloquer' => [['id'], ['_controller' => 'App\\Controller\\AdminSystemController::bloquerPartenaie'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/ajout']], [], []],
+    'find_partenaires' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::liste'], [], [['text', '/api/partenaires']], [], []],
     'compt' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::ajoutComptB'], [], [['text', '/api/comptB']], [], []],
     'depot' => [[], ['_controller' => 'App\\Controller\\AdminSystemController::Depot'], [], [['text', '/api/depot']], [], []],
     'transaction_index' => [[], ['_controller' => 'App\\Controller\\TransactionController::index'], [], [['text', '/api/']], [], []],
@@ -17,6 +16,7 @@ return [
     'transaction_delete' => [['id'], ['_controller' => 'App\\Controller\\TransactionController::delete'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api']], [], []],
     'user_new' => [[], ['_controller' => 'App\\Controller\\UserController::addUser'], [], [['text', '/api/new']], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\UserController::login'], [], [['text', '/api/loginchek']], [], []],
+    'bloquer' => [['id'], ['_controller' => 'App\\Controller\\UserController::modifierUser'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/modif']], [], []],
     'bloq' => [[], ['_controller' => 'App\\Controller\\UserController::allouerCompte'], [], [['text', '/api/allouer']], [], []],
     'api_entrypoint' => [['index', '_format'], ['_controller' => 'api_platform.action.entrypoint', '_format' => '', '_api_respond' => 'true', 'index' => 'index'], ['index' => 'index'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', 'index', 'index', true], ['text', '/api']], [], []],
     'api_doc' => [['_format'], ['_controller' => 'api_platform.action.documentation', '_format' => '', '_api_respond' => 'true'], [], [['variable', '.', '[^/]++', '_format', true], ['text', '/api/docs']], [], []],

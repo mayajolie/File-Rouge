@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les annotations
+// Include Dompdf required namespaces
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 /**
@@ -27,6 +30,7 @@ use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les anno
  */
 class AdminSystemController extends FOSRestController
 {
+  
      /**
      * @Route("/admin", name="super", methods={"POST","GET"})
      * @IsGranted("ROLE_SUPER_ADMIN")
@@ -105,16 +109,16 @@ class AdminSystemController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/partenaires", name="find_partenaires")
-     * @IsGranted("ROLE_SUPER_ADMIN")
-     */
-    public function index()
+     * @Route("/partenaires", name="find_partenaires",methods={"GET"})
+      */
+    public function liste()
     {
         $repo = $this->getDoctrine()->getRepository(Partenaires::class);
         $partenaire = $repo->findAll();
-
+        var_dump($partenaire);
         return $this->handleView($this->view($partenaire));
     }
+   
 
   
 
