@@ -447,6 +447,7 @@
     <service id="App\Controller\UserController" class="App\Controller\UserController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
+      <argument type="service" id="security.user_password_encoder.generic"/>
       <call method="setContainer">
         <argument type="service" id=".service_locator.CDOTD6..App\Controller\UserController"/>
       </call>
@@ -5307,6 +5308,12 @@
         <argument key="transaction" type="service" id=".errored..service_locator.EWX.KyZ.App\Entity\Transaction"/>
       </argument>
     </service>
+    <service id=".service_locator.0xDS.HG" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="JWTEncoder" type="service" id="lexik_jwt_authentication.encoder.lcobucci"/>
+      </argument>
+    </service>
     <service id=".service_locator..EwH3.j" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -5324,7 +5331,7 @@
         <argument key="validator" type="service" id="validator"/>
       </argument>
     </service>
-    <service id=".service_locator.h5Oe8AT" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator.7ONf0T7" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\AdminSystemController::Depot" type="service" id=".service_locator.ZIsCxOI"/>
@@ -5338,8 +5345,9 @@
         <argument key="App\Controller\TransactionController::new" type="service" id=".service_locator.7zWnKy7"/>
         <argument key="App\Controller\TransactionController::show" type="service" id=".service_locator.EWX.KyZ"/>
         <argument key="App\Controller\UserController::addUser" type="service" id=".service_locator..EwH3.j"/>
-        <argument key="App\Controller\UserController::allouerCompte" type="service" id=".service_locator.7zWnKy7"/>
-        <argument key="App\Controller\UserController::modifierUser" type="service" id=".service_locator.sFS5.mG"/>
+        <argument key="App\Controller\UserController::allouerCompte" type="service" id=".service_locator.sFS5.mG"/>
+        <argument key="App\Controller\UserController::bloquerUser" type="service" id=".service_locator.7zWnKy7"/>
+        <argument key="App\Controller\UserController::login" type="service" id=".service_locator.0xDS.HG"/>
         <argument key="App\Controller\AdminSystemController:Depot" type="service" id=".service_locator.ZIsCxOI"/>
         <argument key="App\Controller\AdminSystemController:admin" type="service" id=".service_locator.H3qnu8f"/>
         <argument key="App\Controller\AdminSystemController:ajoutComptB" type="service" id=".service_locator.ZIsCxOI"/>
@@ -5351,8 +5359,9 @@
         <argument key="App\Controller\TransactionController:new" type="service" id=".service_locator.7zWnKy7"/>
         <argument key="App\Controller\TransactionController:show" type="service" id=".service_locator.EWX.KyZ"/>
         <argument key="App\Controller\UserController:addUser" type="service" id=".service_locator..EwH3.j"/>
-        <argument key="App\Controller\UserController:allouerCompte" type="service" id=".service_locator.7zWnKy7"/>
-        <argument key="App\Controller\UserController:modifierUser" type="service" id=".service_locator.sFS5.mG"/>
+        <argument key="App\Controller\UserController:allouerCompte" type="service" id=".service_locator.sFS5.mG"/>
+        <argument key="App\Controller\UserController:bloquerUser" type="service" id=".service_locator.7zWnKy7"/>
+        <argument key="App\Controller\UserController:login" type="service" id=".service_locator.0xDS.HG"/>
       </argument>
     </service>
     <service id=".service_locator.LtnrEkg" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
@@ -5632,12 +5641,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
-      <argument type="service" id=".service_locator.h5Oe8AT"/>
+      <argument type="service" id=".service_locator.7ONf0T7"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver" public="false"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver" public="false">
-      <argument type="service" id=".service_locator.h5Oe8AT"/>
+      <argument type="service" id=".service_locator.7ONf0T7"/>
     </service>
     <service id="api_platform.swagger.normalizer.api_gateway.inner" class="ApiPlatform\Core\Swagger\Serializer\DocumentationNormalizer" public="false">
       <argument type="service" id="api_platform.metadata.resource.metadata_factory.cached"/>
@@ -6018,7 +6027,7 @@
     <service id="Vich\UploaderBundle\Form\Type\VichImageType" alias="vich_uploader.form.type.image" public="false"/>
     <service id="Vich\UploaderBundle\Templating\Helper\UploaderHelper" alias="vich_uploader.templating.helper.uploader_helper" public="false"/>
     <service id="Vich\UploaderBundle\Twig\Extension\UploaderExtension" alias="vich_uploader.twig.extension.uploader" public="false"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.h5Oe8AT"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.7ONf0T7"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem" public="false"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="api_platform.name_converter" alias="serializer.name_converter.metadata_aware"/>

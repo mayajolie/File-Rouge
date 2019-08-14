@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminPartController extends AbstractController
 {
     /**
-     * @Route("/fd", name="adminpart")
+     * @Route("/f", name="adminpart")
      */
     public function index()
     {

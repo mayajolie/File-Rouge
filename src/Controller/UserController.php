@@ -16,12 +16,79 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 
 /**
  * @Route("/api")
  */
 class UserController extends AbstractController
 {
+  
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
+    //===================================================>Login<==============================£===============================================================================================//
+    /**
+     * @Route("/login", name="loginch", methods={"POST"})
+     * @param Request $request
+     * @param JWTEncoderInterface $JWTEncoder
+     * @return JsonResponse
+     * @throws \Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException
+     */
+    public function login(Request $request,JWTEncoderInterface $JWTEncoder)
+    {
+        $values = json_decode($request->getContent());
+        $user= $this->getDoctrine()->getRepository(User::class)->findOneBy(['username'=>$values->username]);
+  
+        if (!$user) 
+        {
+            throw $this->createNotFoundException('Nom d\'Utilisateur incorrect');
+        }
+        $isValid = $this->passwordEncoder->isPasswordValid($user,$values->password);
+        var_dump($isValid);
+        if (!$isValid) 
+        {
+            throw new BadCredentialsException();
+        }
+        //===============================================================================
+     
+        $profil = $user->getRoles(); 
+        $statuser = $user->getEtat();
+      
+        if (!empty($statuser)&& $profil!=['ROLE_CAISIER']) {
+        $partenstat =$user->getPartenaire()->getEtat();
+     
+
+        if ($partenstat =='bloquer') 
+        {
+            $data = [
+                'stat' => 400,
+                'messge' => 'Accés refusé! votre prestataire a été bloqué.'
+            ];
+            return new JsonResponse($data, 400);
+        }
+        elseif ($partenstat == 'Actif' &&  $statuser == 'bloquer')
+        {
+            $data = [
+                'stat' => 400,
+                'mesge' => 'Votre accés est bloqué,veillez vous adressez à votre administrateur!'
+            ];
+            return new JsonResponse($data, 400);
+        }
+    }
+        else
+        {
+            $token = $JWTEncoder->encode([
+                'username' => $user->getUsername(),
+                'exp' => time() + 3600 // 1 hour expiration
+            ]);
+
+            return new JsonResponse(['token' => $token]);
+        }
+    }
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      * @IsGranted({"ROLE_ADMIN","ROLE_SUPER_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
@@ -85,51 +152,43 @@ class UserController extends AbstractController
             }
 
 
-    /**
-     * @Route("/loginchek", name="login", methods={"POST","GET"})
-     */
-    public function login(Request $request)
-    {
+    // /**
+    //  * @Route("/loginchek", name="login", methods={"POST","GET"})
+    //  */
+    // public function loginf(Request $request)
+    // {
       
-        $user = $this->getUser();
+    //     $user = $this->getUser();
 
-        return $this->json([
-            'username' => $user->getUsername(),
-            'roles' => $user->getRoles(),
-        ]);
-    }
+    //     return $this->json([
+    //         'username' => $user->getUsername(),
+    //         'roles' => $user->getRoles(),
+    //     ]);
+    // }
     /**
      * @Route("/modif/{id}", name="bloquer", methods={"PUT"})
+     * @IsGranted({"ROLE_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
+
      */
-    public function modifierUser(Request $request, SerializerInterface $serializer, User $user, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    public function allouerCompte(Request $request, SerializerInterface $serializer, User $user, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
        
-        $user=$this->getUser();
-        
-        $part=$user->getPartenaire();
-        
+        $adpart=$this->getUser();  
+  
+        $part=$adpart->getPartenaire();
         $compt=$part->getComptBancaires();
-       var_dump($part);die();  
        $numero=$compt[0]->getNumCompt();
-       
         foreach ($compt as $value) {
-            if ($value->getNumCompt() != $numero) {
-                $user->setCompteBancaire($value->getNumCompt());
-                var_dump($user);die();  
-
+            if ($value->getNumCompt()!= $numero) {
+              $newne=$value->getNumCompt();
                 break;
-            }
+            } 
         }
+       
+       
         $bloqueP = $entityManager->getRepository(User::class)->find($user->getId());
-        var_dump($bloqueP); die();
-        $data = json_decode($request->getContent());
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = ucfirst($key);
-                $setter = 'set'.$name;
-                $bloqueP->$setter($value);
-            }
-        }
+         $user->setCompteBancaire($newne);
+        //var_dump($user); die();
         $errors = $validator->validate($bloqueP);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
@@ -141,7 +200,7 @@ class UserController extends AbstractController
         $entityManager->flush();
         $data = [
             'statu' => 200,
-            'messag' => 'L \'etat du partenaire a bien été mis à jour',
+            'messag' => 'Le compte a ete bien allouer',
         ];
 
         return new JsonResponse($data);
@@ -150,7 +209,7 @@ class UserController extends AbstractController
      * @Route("/allouer", name="bloq", methods={"POST"})
      * @IsGranted({"ROLE_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
      */
-    public function allouerCompte(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    public function bloquerUser(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $user=$this->getUser();
         var_dump($user);die();  
