@@ -18,6 +18,8 @@ class TransactionType extends AbstractType
             ->add('nomB')
             ->add('prenomB')
             ->add('cniB')
+            ->add('telephoneE')
+            ->add('telephoneB')
         ;
     }
 

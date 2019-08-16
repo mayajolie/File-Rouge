@@ -14,7 +14,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 '/ajout/{id}',
             ],
             'name' => [
-                'bloquer',
+                'bloqr',
             ],
             'methods' => [
                 [

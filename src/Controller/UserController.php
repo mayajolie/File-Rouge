@@ -15,8 +15,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/api")
@@ -42,7 +43,7 @@ class UserController extends AbstractController
     {
         $values = json_decode($request->getContent());
         $user= $this->getDoctrine()->getRepository(User::class)->findOneBy(['username'=>$values->username]);
-  
+        
         if (!$user) 
         {
             throw $this->createNotFoundException('Nom d\'Utilisateur incorrect');
@@ -56,12 +57,14 @@ class UserController extends AbstractController
         //===============================================================================
      
         $profil = $user->getRoles(); 
+        var_dump($profil); 
         $statuser = $user->getEtat();
+        var_dump($statuser); 
       
-        if (!empty($statuser)&& $profil!=['ROLE_CAISIER']) {
+        if (!empty($statuser) && $profil !=['ROLE_CAISIER']) {
         $partenstat =$user->getPartenaire()->getEtat();
-     
-
+     var_dump($partenstat); 
+        
         if ($partenstat =='bloquer') 
         {
             $data = [
@@ -70,15 +73,21 @@ class UserController extends AbstractController
             ];
             return new JsonResponse($data, 400);
         }
-        elseif ($partenstat == 'Actif' &&  $statuser == 'bloquer')
+        elseif ($partenstat == 'Actif' ||  $statuser == 'bloquer')
         {
             $data = [
                 'stat' => 400,
                 'mesge' => 'Votre accés est bloqué,veillez vous adressez à votre administrateur!'
             ];
             return new JsonResponse($data, 400);
+        }else{
+        $token = $JWTEncoder->encode([
+            'username' => $user->getUsername(),
+            'exp' => time() + 3600 // 1 hour expiration
+        ]);
+        return new JsonResponse(['token' => $token]);
         }
-    }
+        }
         else
         {
             $token = $JWTEncoder->encode([
@@ -150,21 +159,37 @@ class UserController extends AbstractController
 
                
             }
+            //========================Bloquer un utilisateur========================£===============================================================================================//
+    /**
+     * @Route("/utilisateur/{id}", name="utilisaUpdate", methods={"PUT"})
+     * @IsGranted({"ROLE_SUPER_ADMIN","ROLE_ADMIN"},message="Acces Refusé!Veillez vous connecter en tant que super administrateur.")
+     */
+    public function updat(Request $request, SerializerInterface $serializer, User $user, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    {
+        $utilisaUpdate = $entityManager->getRepository(User::class)->find($user->getId());
+        $data = json_decode($request->getContent());
+        foreach ($data as $key => $values) {
+            if ($key && !empty($values)) {
+                $status = ucfirst($key);
+                $setter = 'set' . $status;
+                $utilisaUpdate->$setter($values);
+            }
+        }
+        $errors = $validator->validate($utilisaUpdate);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, [
+                'ContentType' => 'applications/json'
+            ]);
+        }
+        $entityManager->flush();
+        $data = [
+            'statut' => 200,
+            'message' => 'Le statuts de l\'utilisateur a été mis à jour'
+        ];
+        return new JsonResponse($data);
+    }
 
-
-    // /**
-    //  * @Route("/loginchek", name="login", methods={"POST","GET"})
-    //  */
-    // public function loginf(Request $request)
-    // {
-      
-    //     $user = $this->getUser();
-
-    //     return $this->json([
-    //         'username' => $user->getUsername(),
-    //         'roles' => $user->getRoles(),
-    //     ]);
-    // }
     /**
      * @Route("/modif/{id}", name="bloquer", methods={"PUT"})
      * @IsGranted({"ROLE_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
@@ -188,7 +213,6 @@ class UserController extends AbstractController
        
         $bloqueP = $entityManager->getRepository(User::class)->find($user->getId());
          $user->setCompteBancaire($newne);
-        //var_dump($user); die();
         $errors = $validator->validate($bloqueP);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
@@ -205,41 +229,6 @@ class UserController extends AbstractController
 
         return new JsonResponse($data);
     }
-    /**
-     * @Route("/allouer", name="bloq", methods={"POST"})
-     * @IsGranted({"ROLE_ADMIN"},message="vous netes pas autoriser a ajouter des utilisateur")
-     */
-    public function bloquerUser(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
-    {
-        $user=$this->getUser();
-        var_dump($user);die();  
-        $part=$user->getPartenaire();
-        $compt=$part->getComptBancaires();
-       $numero=$compt[0]->getNumCompt();
-
-        foreach ($compt as $value) {
-            if ($value->getNumCompt() != $numero) {
-                $user->setCompteBancaire($value->getNumCompt());
-                var_dump($user);die();  
-
-                break;
-            }
-        }
-        $errors = $validator->validate($bloqueP);
-        if (count($errors)) {
-            $errors = $serializer->serialize($errors, 'json');
-
-            return new Response($errors, 500, [
-                'Content-Type' => 'application/json',
-            ]);
-        }
-        $entityManager->flush();
-        $data = [
-            'statu' => 200,
-            'messag' => 'L \'etat du partenaire a bien été mis à jour',
-        ];
-
-        return new JsonResponse($data);
-    }
+   
 
 }

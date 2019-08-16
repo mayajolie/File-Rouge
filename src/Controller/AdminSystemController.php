@@ -55,7 +55,7 @@ class AdminSystemController extends FOSRestController
      $form->handleRequest($request);
      $Values =$request->request->all();
      $form->submit($Values);
-     $partenaire->setEtat('bloquer');
+     $partenaire->setEtat('actif');
      $entityManager->persist($partenaire);
 
         //======================= creer admin du partenaire====================//
@@ -69,7 +69,7 @@ class AdminSystemController extends FOSRestController
 
         $user->setPassword($passwordEncoder->encodePassword($user,$form->get('plainPassword')->getData()));
         $user->setRoles(["ROLE_ADMIN"]);
-        $user->setEtat('bloquer');
+        $user->setEtat('actif');
         $user->setCompteBancaire($code);
         $user->setPartenaire($partenaire);
             $entityManager = $this->getDoctrine()->getManager();
@@ -123,13 +123,13 @@ class AdminSystemController extends FOSRestController
   
 
     /**
-     * @Route("/ajout/{id}", name="bloquer", methods={"PUT"})
-     *  @IsGranted("ROLE_SUPER_ADMIN")
+     * @Route("/ajout/{id}", name="bloqr", methods={"PUT"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function bloquerPartenaie(Request $request, SerializerInterface $serializer, Partenaires $partenaire, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $bloqueP = $entityManager->getRepository(Partenaires::class)->find($partenaire->getId());
-        var_dump($bloqueP); die();
+    
         $data = json_decode($request->getContent());
         foreach ($data as $key => $value) {
             if ($key && !empty($value)) {

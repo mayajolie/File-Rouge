@@ -28,9 +28,9 @@ class Partenaires
      * @ORM\Column(type="string", length=255)
      */
     private $raisonSocial;
-
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="ninea",type="string", length=255, unique=true)
+     * @Assert\NotBlank(message="Vous devez insérer un ninea")
      */
     private $ninea;
 

@@ -20,7 +20,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
                 true,
             ],
             'required' => [
-                false,
+                true,
             ],
             'identifier' => [
                 false,
@@ -31,7 +31,7 @@ return $getExpiry ? PHP_INT_MAX : Hydrator::hydrate(
         ],
         'Symfony\\Component\\PropertyInfo\\Type' => [
             'builtinType' => [
-                1 => 'int',
+                1 => 'string',
             ],
             'nullable' => [
                 1 => false,
