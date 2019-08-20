@@ -77,41 +77,44 @@ class TransactionController extends AbstractController
         $Values = $request->request->all();
         $form->submit($Values);
 
-        $code = date('s') . date('m') . date('d') . date('y') . date('m');
+         //recupere le numero du compte bancaire
+         $part = $this->getUser()->getCompteBancaire();
+         //on recupere le montant qui est dans ce compte
+         $repo = $this->getDoctrine()->getRepository(ComptBancaire::class);
+         $numcompt = $repo->findOneBy(['numCompt' => $part]);
+         $val = $numcompt->getSolde();
+         $repo = $this->getDoctrine()->getRepository(Tarifs::class);
+         $tar = $repo->findAll();
+            //recuper  l'utilisateur qui fait le transaction
+            $user = $this->getUser();
 
+            $type = $Values['type'];
+            
+            if ($montant < $val) {
+                foreach ($tar as $value) {
+                    $min = $value->getBorneInferieur();
+                    $max = $value->getBorneSuperieur();
+                    if (($min <= $montant) && ($montant >= $max)) {
+                        $com = $value->getValeur();
+                    }
+                }
+            $etat = (($com * 30) / 100);
+            $envoye = (($com * 10) / 100);
+            $retrait = (($com * 20) / 100);
+            $system = (($com * 40) / 100);
 
-        //recuper  l'utilisateur qui fait le transaction
-        $user = $this->getUser();
+         $code = date('s') . date('m') . date('d') . date('y') . date('m');
+      
 
         $transaction->setDateTrans(new \DateTime());
         $transaction->setUser($user);
         $montant = $Values['montant'];
         $montantpaye = $Values['montantpayer'];
         $transaction->setMontantpaye($montantpaye);
-        //recupere le numero du compte bancaire
-        $part = $this->getUser()->getCompteBancaire();
-        //on recupere le montant qui est dans ce compte
-        $repo = $this->getDoctrine()->getRepository(ComptBancaire::class);
-        $numcompt = $repo->findOneBy(['numCompt' => $part]);
-        $val = $numcompt->getSolde();
-        $repo = $this->getDoctrine()->getRepository(Tarifs::class);
-        $tar = $repo->findAll();
+       
         //on compare le montant qu'on veut recuperer et le montant qui existe dans le compte
-        if ($montant < $val) {
-            foreach ($tar as $value) {
-                $min = $value->getBorneInferieur();
-                $max = $value->getBorneSuperieur();
-                if (($min <= $montant) && ($montant >= $max)) {
-                    $com = $value->getValeur();
-                }
-            }
-            $type = $Values['type'];
-            $etat = (($com * 30) / 100);
-            $envoye = (($com * 10) / 100);
-            $retrait = (($com * 20) / 100);
-
-            $system = (($com * 40) / 100);
-
+     
+      
             if ($type == '1') {
                 $transaction->setMontant($montant);
                 $transaction->setCodeTrans($code);

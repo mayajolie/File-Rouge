@@ -134,6 +134,11 @@ class User implements UserInterface
      */
     private $transactions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Retrait", mappedBy="user")
+     */
+    private $retraits;
+
    
     /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
@@ -173,6 +178,7 @@ class User implements UserInterface
     {
         $this->depots = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->retraits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -422,6 +428,37 @@ class User implements UserInterface
            // set the owning side to null (unless already changed)
            if ($transaction->getUser() === $this) {
                $transaction->setUser(null);
+           }
+       }
+
+       return $this;
+   }
+
+   /**
+    * @return Collection|Retrait[]
+    */
+   public function getRetraits(): Collection
+   {
+       return $this->retraits;
+   }
+
+   public function addRetrait(Retrait $retrait): self
+   {
+       if (!$this->retraits->contains($retrait)) {
+           $this->retraits[] = $retrait;
+           $retrait->setUser($this);
+       }
+
+       return $this;
+   }
+
+   public function removeRetrait(Retrait $retrait): self
+   {
+       if ($this->retraits->contains($retrait)) {
+           $this->retraits->removeElement($retrait);
+           // set the owning side to null (unless already changed)
+           if ($retrait->getUser() === $this) {
+               $retrait->setUser(null);
            }
        }
 
